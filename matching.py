@@ -49,13 +49,13 @@ def match(arr: list):
     Func
 
     >>> matrix = [
-    ... [5, 7, 8],
-    ... [9, 5, 10],
-    ... [6, 9, 5]]
+    ... [40, 60, 15],
+    ... [25, 30, 45],
+    ... [55, 30, 25]]
     >>> match(matrix)
     '''
-    arr2 = deepcopy(arr)
-    n = len(arr2)
+    arr_copy = deepcopy(arr)
+    n = len(arr_copy)
 
     # Step 1 & 2
     def reduction(arr_copy: list):
@@ -77,71 +77,58 @@ def match(arr: list):
         return [[round(value, 2) for value in row] for row in arr_copy]
 
     # Step 3
-    def cover_zeros(matrix: list):
+    def find_lines(matrix: list[list], dels: tuple[list, list]):
         '''
         Func
         '''
-        assigned = [-1] * n
+        rows_zeros = []
+        col_zeros = []
+        for row in matrix:
+            rows_zeros.append(row.count(0))
+        for i in range(n):
+            col = []
+            for row in matrix:
+                col.append(row[i])
+            col_zeros.append(col.count(0))
+        zeros = rows_zeros + col_zeros
+        max_zeros = zeros.index(max(zeros))
+        if max_zeros < n:
+            dels[0][max_zeros] = True
+            matrix[max_zeros] = [-1 for n in matrix[max_zeros]]
+        else:
+            dels[1][max_zeros - n] = True
+            for row in matrix:
+                row[max_zeros - n] = -1
+        a, b = dels
+        if sum(row.count(0) for row in matrix) == 0:
+            return a.count(True) + b.count(True) == n
+        return find_lines(matrix, dels)
+    arr2 = reduction(arr_copy)
+    lines = find_lines(deepcopy(arr2), ([False for _ in range(n)], [False for _ in range(n)]))
 
-        for r in range(n):
-            for c in range(n):
-                if matrix[r][c] == 0 and c not in assigned:
-                    assigned[r] = c
+    # Step 5!
+    def choose_zeros(matrix: list):
+        '''
+        Docstring for choose_zeros
+
+        :param matrix: Description
+        '''
+        result = [[False]*n for _ in range(n)]
+        col_used = [False] * n
+        print(matrix)
+        for i in range(n):
+            for j in range(n):
+                if matrix[i][j] == 0 and not col_used[j]:
+                    result[i][j] = True
+                    col_used[j] = True
                     break
 
-        marked_rows = {r for r in range(n) if assigned[r] == -1}
-        marked_cols = set()
-
-        changed = True
-        while changed:
-            changed = False
-            for r in list(marked_rows):
-                for c in range(n):
-                    if matrix[r][c] == 0 and c not in marked_cols:
-                        marked_cols.add(c)
-                        changed = True
-            for r in range(n):
-                if assigned[r] in marked_cols and r not in marked_rows:
-                    marked_rows.add(r)
-                    changed = True
-
-        line_rows = [r for r in range(n) if r not in marked_rows]
-        line_cols = list(marked_cols)
-
-        return line_rows, line_cols
-
-    lines = cover_zeros(reduction(arr2))
-
-    def adjust_matrix(matrix: list, covers: tuple[list, list]) -> list:
-        '''
-        Func
-        '''
-        row_cover, col_cover = covers
-        row_cover = [i in row_cover for i in range(n)]
-        col_cover = [i in col_cover for i in range(n)]
-        min_uncovered = float('inf')
-        for r in range(n):
-            if not row_cover[r]:
-                for c in range(n):
-                    if not col_cover[c]:
-                        min_uncovered = min(min_uncovered, matrix[r][c])
-        k = min_uncovered
-        for r in range(n):
-            for c in range(n):
-                if not row_cover[r] and not col_cover[c]:
-                    matrix[r][c] -= k
-                elif row_cover[r] and col_cover[c]:
-                    matrix[r][c] += k
-
-        return matrix
+        return result
 
 
+    zeros = choose_zeros(arr2)
+    return zeros
 
-
-    if len(lines[0]) + len(lines[1]) != n:
-        return adjust_matrix(reduction(arr2), lines)
-    else:
-        return lines
 if __name__ == "__main__":
     import doctest
     print(doctest.testmod())
