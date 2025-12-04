@@ -101,33 +101,44 @@ def match(arr: list):
                 row[max_zeros - n] = -1
         a, b = dels
         if sum(row.count(0) for row in matrix) == 0:
-            return a.count(True) + b.count(True) == n
+            return (a.count(True) + b.count(True) == n, dels)
         return find_lines(matrix, dels)
     arr2 = reduction(arr_copy)
     lines = find_lines(deepcopy(arr2), ([False for _ in range(n)], [False for _ in range(n)]))
 
+
+    # Step 4
+    def shift(matrix: list[list], dels: tuple[bool, list]):
+        min_v = min(min(row) for row in matrix)
+        for index, row in enumerate(matrix):
+            if dels[0][index]:
+                row = [n + min_v if dels[0][i] else n for i, n in enumerate(row)]
+                continue
+            row = [n - min_v for n in row]
+        return matrix
+
+    while not lines[0]:
+        arr2 = shift(arr2, lines[1])
+        lines = find_lines(deepcopy(arr2), ([False for _ in range(n)], [False for _ in range(n)]))
     # Step 5!
-    def choose_zeros(matrix: list):
+    def choose_zeros(matrix: list[list]):
         '''
         Docstring for choose_zeros
 
         :param matrix: Description
         '''
-        result = [[False]*n for _ in range(n)]
-        col_used = [False] * n
-        print(matrix)
-        for i in range(n):
-            for j in range(n):
-                if matrix[i][j] == 0 and not col_used[j]:
-                    result[i][j] = True
-                    col_used[j] = True
-                    break
+        chosen = []
+        while len(chosen) != n:
+            for i, row in enumerate(matrix):
+                if row.count(0) == 1:
+                    j = row.index(0)
+                    chosen.append((i, j))
+                    row = [-1 for _ in row]
+                    for _row in matrix:
+                        _row[j] = -1
+        return chosen
 
-        return result
-
-
-    zeros = choose_zeros(arr2)
-    return zeros
+    return choose_zeros(arr2)
 
 if __name__ == "__main__":
     import doctest
