@@ -75,7 +75,7 @@ python -m matcher --help
 
 ### Basic Example
 
-\`\`\`python
+```python
 from matching import convert_similarity, remove_not_accepted, match
 from matrix_builder import build_similarity_matrix
 
@@ -98,11 +98,11 @@ assignments = match(filtered_matrix)
 # Recipient 0 → Donor 2
 # Recipient 1 → Donor 0
 # Recipient 2 → Donor 1
-\`\`\`
+```
 
 ### Command Line Interface
 
-\`\`\`bash
+```bash
 # Run matching with custom data
 python -m matcher --recipients data/recipients.json --donors data/donors.json
 
@@ -111,11 +111,11 @@ python -m matcher --threshold 0.7 --input data/sample.json
 
 # Generate detailed report
 python -m matcher --input data/sample.json --output results/matching.json --verbose
-\`\`\`
+```
 
 ### Working with HLA Data
 
-\`\`\`python
+```python
 from scoring.scoring import pair_score
 
 # Define HLA profiles
@@ -125,7 +125,7 @@ donor = ["A*02:01", "A*03:01", "B*07:02", "B*35:01"]
 # Calculate compatibility score
 score = pair_score(recipient, donor)
 print(f"Compatibility: {score[2]}")
-\`\`\`
+```
 
 ## 🧮 Algorithm
 
@@ -134,9 +134,9 @@ print(f"Compatibility: {score[2]}")
 The system uses the **Hungarian Algorithm** (Kuhn-Munkres algorithm) for optimal assignment:
 
 1. **Similarity to Cost Conversion**
-   \`\`\`
+   ```
    cost = 1 - similarity
-   \`\`\`
+   ```
 
 2. **Threshold Filtering**
    - Set cost to ∞ if similarity < 60%
@@ -164,7 +164,7 @@ Perfect for real-world medical matching scenarios with hundreds of patients.
 
 ## 📁 Project Structure
 
-\`\`\`
+```
 hla-matcher/
 ├── matcher/                 # CLI and utilities
 │   ├── __main__.py         # Entry point
@@ -180,13 +180,13 @@ hla-matcher/
 ├── matrix_builder.py       # Similarity matrix construction
 ├── requirements.txt        # Python dependencies
 └── README.md              # This file
-\`\`\`
+```
 
 ## 🧪 Testing
 
 Run the comprehensive test suite:
 
-\`\`\`bash
+```bash
 # Run all tests
 python -m pytest tests/
 
@@ -196,7 +196,7 @@ python -m pytest --cov=matcher --cov=scoring tests/
 # Run doctests
 python matching.py
 python matrix_builder.py
-\`\`\`
+```
 
 ### Example Test Cases
 
@@ -233,27 +233,27 @@ We welcome contributions! Here's how you can help:
 
 1. **Fork the repository**
 2. **Create a feature branch**
-   \`\`\`bash
+   ```bash
    git checkout -b feature/amazing-feature
-   \`\`\`
+   ```
 3. **Make your changes**
    - Add tests for new functionality
    - Update documentation
    - Follow PEP 8 style guidelines
 
 4. **Commit your changes**
-   \`\`\`bash
+   ```bash
    git commit -m "Add amazing feature"
-   \`\`\`
+   ```
 
 5. **Push and create a Pull Request**
-   \`\`\`bash
+   ```bash
    git push origin feature/amazing-feature
-   \`\`\`
+   ```
 
 ### Development Setup
 
-\`\`\`bash
+```bash
 # Install development dependencies
 pip install -r requirements-dev.txt
 
@@ -262,7 +262,7 @@ flake8 matcher/ scoring/ matching.py
 
 # Format code
 black matcher/ scoring/ matching.py
-\`\`\`
+```
 
 ## 🔬 Research & Background
 
@@ -297,7 +297,7 @@ Benchmark results on various matrix sizes:
 
 ## 🛠️ Technical Stack
 
-- **Python 3.8+** - Core language
+- **Python 3.13** - Core language
 - **NumPy** - Matrix operations
 - **Pytest** - Testing framework
 - **Black** - Code formatting
