@@ -29,10 +29,10 @@ def build_similarity_matrix(recipients : Sequence , donors : Sequence) -> np.nda
         >>> matrix.shape
         (2, 3)
     """
-    similarity_matrix = np.zeros((len(recipients),len(donors)) )
+    similarity_matrix = [[0 for j in donors] for i in recipients]
     for i,rec in enumerate(recipients):
         for j,don in enumerate(donors):
-            similarity_matrix[i , j] = pair_score(rec , don)[2]
+            similarity_matrix[i][j] = pair_score(rec , don)[2]
     return similarity_matrix
 
 
