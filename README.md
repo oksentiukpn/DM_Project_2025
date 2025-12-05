@@ -59,7 +59,7 @@ Each person is represented by a set of HLA alleles (e.g., `A*02:01`). Finding co
 
 ### Setup
 
-\`\`\`bash
+```bash
 # Clone the repository
 git clone https://github.com/yourusername/hla-matcher.git
 cd hla-matcher
@@ -69,7 +69,7 @@ pip install -r requirements.txt
 
 # Verify installation
 python -m matcher --help
-\`\`\`
+```
 
 ## 💻 Usage
 
