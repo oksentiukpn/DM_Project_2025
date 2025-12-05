@@ -54,7 +54,7 @@ Each person is represented by a set of HLA alleles (e.g., `A*02:01`). Finding co
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.13 or higher
 - pip package manager
 
 ### Setup
