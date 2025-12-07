@@ -2,8 +2,9 @@
 Matching module
 '''
 from copy import deepcopy
+import collections
 MIN_ACCEPT = 0.6
-INF = 1e9
+INF = float('inf')
 
 # similarity = [
 #     [0.5, 0.2, 0.7],
@@ -39,7 +40,7 @@ def remove_not_accepted(arr: list) -> list:
 
     >>> similarity = convert_similarity(similarity)
     >>> remove_not_accepted(similarity)
-    [[1000000000.0, 1000000000.0, 0.3], [1000000000.0, 0.4, 0.0], [1000000000.0, 1000000000.0, 0.1]]
+    [[inf, inf, 0.3], [inf, 0.4, 0.0], [inf, inf, 0.1]]
     '''
     return [[(value if value <= 1-MIN_ACCEPT else INF) for value in row] for row in arr]
 
@@ -87,7 +88,7 @@ def match(arr: list):
     ... [180,170,160,150,140,130,120,110,100, 90, 80, 75, 70, 65, 60, 55, 40, 35, 28, 18, 96, 95, 94, 93, 92,  4,  5,  6,  7,  0 ]]
 
     >>> match(matrix_30)
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+    [5, 0, 1, 2, 3, 4, 20, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 9, 21, 22, 23, 24, 25, 26, 27, 28, 29]
     '''
     arr_copy = deepcopy(arr)
     n = len(arr_copy)
@@ -112,61 +113,114 @@ def match(arr: list):
         return [[round(value, 2) for value in row] for row in arr_copy]
 
     # Step 3
-    def find_lines(matrix: list[list], dels: tuple[list, list]):
+    def find_lines(matrix: list[list]):
         '''
         Func
         '''
-        rows_zeros = []
-        col_zeros = []
-        for row in matrix:
-            rows_zeros.append(row.count(0))
+        # Building graph
+        adj = [[] for _ in range(n)]
         for i in range(n):
-            col = []
-            for row in matrix:
-                col.append(row[i])
-            col_zeros.append(col.count(0))
-        zeros = rows_zeros + col_zeros
-        max_zeros = zeros.index(max(zeros))
-        if max_zeros < n:
-            dels[0][max_zeros] = True
-            matrix[max_zeros] = [-1 for n in matrix[max_zeros]]
-        else:
-            dels[1][max_zeros - n] = True
-            for row in matrix:
-                row[max_zeros - n] = -1
-        a, b = dels
-        if sum(row.count(0) for row in matrix) == 0:
-            return (a.count(True) + b.count(True) == n, dels)
-        return find_lines(matrix, dels)
-    arr2 = reduction(arr_copy)
-    lines = find_lines(deepcopy(arr2), ([False for _ in range(n)], [False for _ in range(n)]))
+            for k in range(n):
+                if not matrix[i][k]:
+                    adj[i].append(k)
 
+        # Hopcroft algorithm
+
+        pair_u = [-1] * n
+        pair_v = [-1] * n
+        dist = [-1] * n
+
+        def bfs():
+            queue = collections.deque()
+            for u in range(n):
+                if pair_u[u] == -1:
+                    dist[u] = 0
+                    queue.append(u)
+                else:
+                    dist[u] = INF
+            dist_null = INF
+
+            while queue:
+                u = queue.popleft()
+                if dist[u] < dist_null:
+                    for v in adj[u]:
+                        if pair_v[v] == -1:
+                            if dist_null == INF:
+                                dist_null = dist[u] + 1
+                        elif dist[pair_v[v]] == INF:
+                            dist[pair_v[v]] = dist[u] + 1
+                            queue.append(pair_v[v])
+            return dist_null != INF
+
+        def dfs(u):
+            if u != -1:
+                for v in adj[u]:
+                    if pair_v[v] == -1 or (dist[pair_v[v]] == dist[u] + 1 and dfs(pair_v[v])):
+                        pair_v[v] = u
+                        pair_u[u] = v
+                        return True
+                dist[u] = INF
+                return False
+            return True
+
+        while bfs():
+            for u in range(n):
+                if pair_u[u] == -1:
+                    dfs(u)
+
+        # Kening theorem
+
+        free_rows = [i for i in range(n) if pair_u[i] == -1]
+        visited_rows = set()
+        visited_cols = set()
+        queue = collections.deque(free_rows)
+        for row in free_rows:
+            visited_rows.add(row)
+
+        while queue:
+            u = queue.popleft()
+            for v in adj[u]:
+                if v not in visited_cols:
+                    visited_cols.add(v)
+
+                    matched_row = pair_v[v]
+                    if matched_row != -1 and matched_row not in visited_rows:
+                        visited_rows.add(matched_row)
+                        queue.append(matched_row)
+        selected_rows = [i for i in range(n) if i not in visited_rows]
+        selected_cols = sorted(list(visited_cols))
+        count = len(selected_rows) + len(selected_cols)
+        return {'rows': selected_rows, 'cols': selected_cols, 'count': count}
+    arr2 = reduction(arr_copy)
+    lines = find_lines(deepcopy(arr2))
 
     # Step 4
-    def shift(matrix: list[list], dels: tuple[bool, list]):
+    def shift(matrix: list[list], dels: dict):
         '''
         Docstring for shift
 
         :param matrix: Description
         :type matrix: list[list]
         :param dels: Description
-        :type dels: tuple[bool, list]
+        :type dels: dict
         '''
         # finding min for all matrix
-        min_v = min(min(row) for row in matrix)
+        min_v = min(v for i, row in enumerate(matrix) for j, v in enumerate(row) if i not in dels['rows'] and j not in dels['cols'])
         for index, row in enumerate(matrix):
-            if dels[0][index]: # adding to crossed number
-                row = [n + min_v if dels[0][i] else n for i, n in enumerate(row)]
+            if index in dels['rows']: # adding to crossed number
+                matrix[index] = [round(n + min_v, 3) if i in dels['cols'] else n for i, n in enumerate(row)]
                 continue
-            row = [n - min_v for n in row] # removing for all another
+            matrix[index] = [n if i in dels['cols'] else round(n - min_v, 3) for i, n in enumerate(row)] # removing for all another
         return matrix
     k = 0
-    while not lines[0]:
+    while lines['count'] != n:
         k += 1
         if k == 1000:
+            print(lines)
             return -1
-        arr2 = shift(arr2, lines[1])
-        lines = find_lines(deepcopy(arr2), ([False for _ in range(n)], [False for _ in range(n)]))
+        arr2 = shift(arr2, lines)
+        lines = find_lines(deepcopy(arr2))
+
     # Step 5!
     def choose_zeros(matrix: list[list]):
         '''
@@ -197,7 +251,7 @@ def match(arr: list):
         if recurse(0):
             return result
         # if we did not find, it must not happen, for bug finding
-        return None
+        return 'NOT FOUND'
 
     return choose_zeros(arr2)
 
