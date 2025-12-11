@@ -69,7 +69,7 @@ cost_matrix = np.array(square(m))
 
 row_ind, col_ind = linear_sum_assignment(cost_matrix)
 
-# 3. Calculate the total cost using the optimal indices
+# Calculate the total cost using the optimal indices
 total_cost = cost_matrix[row_ind, col_ind].sum()
 
 print("Optimal assignment:")
