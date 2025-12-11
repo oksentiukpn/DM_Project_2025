@@ -9,10 +9,6 @@ from sys import exit as system32_termination
 # INF = float('inf')
 INF = 1e12
 
-# BIGM = [[float(f'0.{n}') for n in random.choices(range(0, 100), k = 120)] for _ in range(90)]
-# for i in range(120):
-#     BIGM[5][i] = 0
-
 
 
 def square(matrix: list[list]) -> list:
@@ -115,7 +111,7 @@ def match(arr: list):
         sub_arr.extend([[0] * cols for _ in range(cols - rows_to_match)])
     n = len(sub_arr)
     arr = sub_arr
-    # Step 1 & 2
+
     def reduction(arr_copy: list):
         '''
         Reduction step of Hungarian algorithm
@@ -134,7 +130,7 @@ def match(arr: list):
         arr_copy = [[arr_copy[r][c] - col_mins[c] for c in range(n)] for r in range(n)]
         return [[value for value in row] for row in arr_copy]
 
-    # Step 3
+
     def find_lines(matrix: list[list], prev: list = None):
         '''
         Finding minimum number of lines to cover all zeros in matrix
@@ -220,11 +216,9 @@ def match(arr: list):
                         queue.append(matched_row)
         selected_rows = [i for i in range(n) if i not in visited_rows]
         selected_cols = sorted(list(visited_cols))
-        # Step 5 is not needed, becase pair_u is what we wanna find
         return {'rows': selected_rows, 'cols': selected_cols, \
         'count': len([x for x in pair_u if x != -1]), 'matching': pair_u}
 
-    # Step 4
     def shift(matrix: list[list], dels: dict):
         ''''
         Shifting step of Hungarian algorithm
@@ -282,8 +276,10 @@ def match(arr: list):
 
 if __name__ == "__main__":
     import doctest
+    doctest.testmod()
+
+
     # from time import perf_counter
-    print(doctest.testmod())
     # start = perf_counter()
     # ma = BIGM
     # if not ma:

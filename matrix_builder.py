@@ -3,11 +3,6 @@ Docstring for DM.DM_Project_2025.matrix_builder
 '''
 from scoring import pair_score
 
-
-# Try to import the real pair_score from scoring.py. If unavailable (for
-# example when running tests outside the package), keep a lightweight
-# fallback implementation so the module remains usable.
-
 def build_similarity_matrix(recipients: list, donors: list) -> list[list[float]]:
     """
     Constructs a similarity matrix based on scores between recipients and donors.
@@ -48,15 +43,13 @@ def build_similarity_matrix(recipients: list, donors: list) -> list[list[float]]
         >>> len(matrix[0])
         3
     """
-    # Create a list of lists using list comprehension
+    #generate matrix
     similarity_matrix = [[0 for j in donors] for i in recipients]
 
     for i, rec in enumerate(recipients):
         for j, don in enumerate(donors):
-            # `pair_score` may return either a numeric score (float/int) or a
-            # tuple/list where the numeric score is at index 2 (legacy).
+            #calculate pair comparison
             res = pair_score(rec, don)
-            # Normalize to a float score in a defensive way.
             if isinstance(res, int):
                 score = res
             elif isinstance(res, float):
@@ -71,26 +64,22 @@ def build_similarity_matrix(recipients: list, donors: list) -> list[list[float]]
             else:
                 score = float(res)
 
+            #assign
             similarity_matrix[i][j] = score
 
     return similarity_matrix
-# The real `pair_score` is imported from `scoring.py` above. A fallback
-# implementation is provided there if the import fails (random score).
 
 
 if __name__ == "__main__":
     import doctest
 
-    # verbose=True will show the test steps passing
-    print("Running Doctest...")
-    doctest.testmod(verbose=True)
 
-    print("\nRunning Manual Random Test:")
     arr = [0.0 for don in range(4)]
     seq = [0.0 for rec in range(5)]
 
+
+
     result = build_similarity_matrix(seq, arr)
 
-    # Printing the result neatly to prove it works
     for row in result:
         print(row)
