@@ -77,19 +77,30 @@ The `match(arr)` function executes the optimization process, built upon the fund
 | Core Step | Purpose | Technical Logic |
 | :--- | :--- | :--- |
 | **Matrix Reduction** | Create zero entries for potential optimal assignments. | Subtracts the minimum value from every row, then subtracts the minimum value from every column, guaranteeing at least one zero in every row and column. |
-| **Maximum Matching/Line Coverage** | Test if the optimal solution is found. | Determines the minimum number of horizontal and vertical lines required to cover all zero entries. This is achieved using logic derived from **Max Bipartite Matching** principles (e.g., Hopcroft-Karp or augmenting paths). |
+| **Maximum Matching/Line Coverage** | Test if the optimal solution is found. | Determines the minimum number of horizontal and vertical lines required to cover all zero entries. This is achieved using logic derived from **Max Bipartite Matching** principles (Hopcroft-Karp algorithm). |
 | **Matrix Adjustment (Shifting)** | Create new zeros for better matching. | If the number of covering lines is less than the matrix size, the matrix is adjusted: the minimum uncovered value is subtracted from all uncovered cells and added to all double-covered cells, forcing the creation of new optimal zero positions. |
 | **Optimal Assignment** | Finalize the result. | The process iterates until the number of lines equals the matrix dimension, yielding the unique, cost-minimizing assignments for all original recipients. |
 
-### Key Advantages
+### 🧠 Why what we do is what we need: **Kőnig's Theorem**
 
-  * **Provably Optimal:** Guarantees the absolute maximum total compatibility score (minimum cost) across all acceptable assignments.
-  * **Efficiency:** Achieves an $O(n^3)$ time complexity, ensuring practical performance for clinical-scale datasets involving hundreds of patients.
-  * **Clinical Integrity:** Respects the clinical veto by utilizing $\text{INF}$ costs to automatically reject pairings that fall below the configured minimum acceptance threshold.
+The theoretical heart of our **"Line Coverage"** step relies on **Kőnig's Theorem**, which provides the bridge between graph theory and matrix manipulation.
+
+#### The Theorem
+> *"In any bipartite graph, the number of edges in a Maximum Matching equals the number of vertices in a Minimum Vertex Cover."*
+
+#### Application in our project
+In the context of our cost matrix, this theorem translates as follows:
+
+1.  **The Graph:** The matrix is treated as a bipartite graph where an edge exists between a Recipient (row) and Donor (column) only if the cost is **0**.
+2.  **Maximum Matching:** The maximum number of independent zeros (zeros that do not share a row or column) found by the Hopcroft-Karp algorithm.
+3.  **Minimum Vertex Cover:** The minimum number of **Lines** (rows + columns) needed to cross out all zeros in the matrix.
+
+**This logic is the stopping condition for the algorithm:**
+* We calculate the **Minimum Lines** needed to cover all zeros.
+* If $\text{Minimum Lines} = N$ (the matrix dimension), then by Kőnig's theorem, the **Maximum Matching** size is also $N$.
+* **Conclusion:** A perfect solution exists! We can assign every Recipient to a Donor with 0 cost (maximum compatibility). 
 
 -----
-
-
 
 
 ### Complexity Analysis
@@ -204,7 +215,7 @@ The system includes an interactive web interface for:
 - **CSV Upload**: Input recipient/donor data
 - **Real-Time Processing**: Instant algorithm execution
 - **Visual Output**: Color-coded HTML matrices (green = matched, red = unmatched)
-- **Export Options**: Download results as CSV or HTML
+- **Export Options**: Download results as CSV
 
 **Technology Stack**: React + Tailwind CSS for responsive design
 
@@ -253,15 +264,27 @@ python main.py recipients.csv donors.csv --output matrix.csv --format csv
 
 **recipients.csv / donors.csv**:
 ```csv
-ID,Allele1,Allele2,Allele3,Allele4
-R1,A*02:01,A*03:01,B*07:02,B*08:01
-R2,A*01:01,A*24:02,B*35:01,DRB1*15:01
+Recipient,HLA-A Allele 1,HLA-A Allele 2,HLA-B Allele 1,HLA-B Allele 2,HLA-C Allele 1,HLA-C Allele 2,HLA-DRB1 Allele 1,HLA-DRB1 Allele 2,HLA-DQB1 Allele 1,HLA-DQB1 Allele 2
+R1,A*02:01,A*24:02,B*07:02,B*44:02,C*07:01,C*12:03,DRB1*04:01,DRB1*15:01,DQB1*03:01,DQB1*06:02
+R2,A*03:01,A*11:01,B*35:01,B*08:01,C*04:01,C*07:02,DRB1*01:01,DRB1*03:01,DQB1*05:01,DQB1*02:01
 ```
 
-Alternative format (semicolon-separated):
+## 📊 Example Output
+
+**HTML Matrix** (color-coded):
+
+| | D1 | D2 | D3 | D4 |
+|---|----|----|----|----|
+| **R1** | | | 🟢 0.8691 | |
+| **R2** | 🟢 0.9977 | | | |
+| **R3** | | | | 🔴 No match |
+
+**CSV Assignment**:
 ```csv
-ID,Alleles
-R1,A*02:01;A*03:01;B*07:02;B*08:01
+recipient,assigned_donor,similarity
+R1,D3,0.869100
+R2,D1,0.997700
+R3,,
 ```
 
 ---
@@ -280,26 +303,6 @@ pytest tests/test_matching_pipeline.py -v
 
 # Check test coverage
 pytest --cov=. --cov-report=html
-```
-
----
-
-## 📊 Example Output
-
-**HTML Matrix** (color-coded):
-
-| | D1 | D2 | D3 | D4 |
-|---|----|----|----|----|
-| **R1** | | | 🟢 0.8691 | |
-| **R2** | 🟢 0.9977 | | | |
-| **R3** | | | | 🔴 No match |
-
-**CSV Assignment**:
-```csv
-recipient,assigned_donor,similarity
-R1,D3,0.869100
-R2,D1,0.997700
-R3,,
 ```
 
 ---
@@ -362,11 +365,14 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) file for
 ## 👥 Authors
 
 **Discrete Mathematics Project Team 2025**
-- Oleksandr Oksentiuk
-- Maksym Shkunda
-- Ivan Bohatyrov
-- Maryana Moroz
-- Sofia Parubocha
+| Team Member | Role | Key Contributions |
+| :--- | :--- | :--- |
+| **Oleksandr Oksentiuk** | Team Lead / Algorithmic Core | Implemented the Hungarian Algorithm logic (`matching.py`), optimized the Hopcroft-Karp steps for maximum matching, and coordinated the development workflow. |
+| **Maksym Shkunda** | Backend Logic & Data I/O | Developed the CLI entry point (`main.py`), handled CSV parsing/validation, and ensured the robustness of the data processing pipeline. |
+| **Svatoslav Mandzuk** | Visualization & Web Interface | Designed the HTML output generation with color-coded matrices, implemented the web interface logic, and worked on result formatting |
+| **Ivan Bohatyrov** | Documentation & Research | Authored the technical documentation, prepared the mathematical analysis of the algorithm, and compiled the final project report. |
+| **Maryana Moroz** | Domain Logic (Bioinformatics) | Designed the HLA scoring engine (`scoring.py`), researched allele weights, and ensured the biological accuracy of the compatibility model. |
+| **Sofia Parubocha** | QA & Testing | Created comprehensive unit tests (`test_scoring.py`), performed comparative analysis and verified edge cases. |
 
 
 For questions or support, please open an issue on GitHub.
