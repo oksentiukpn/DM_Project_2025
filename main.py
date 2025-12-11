@@ -33,7 +33,7 @@ def read_people(path: str) -> Tuple[List[str], List[List[str]]]:
             return ids, alleles_list
         header = rows[0]
         start = 0
-        if any(h.lower() in ('id', 'recipient', 'donor', 'name') for h in header):
+        if any(h.lower() in ('recipient','donors') for h in header):
             start = 1
 
         for row in rows[start:]:
