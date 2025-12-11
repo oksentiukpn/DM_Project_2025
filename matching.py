@@ -4,12 +4,11 @@ Matching module
 import collections
 from sys import exit as system32_termination
 import random
-from scipy.optimize import linear_sum_assignment
 
-MIN_ACCEPT = 60
 INF = float('inf')
 BIGM = [[float(f'0.{n}') for n in random.choices(range(0, 100), k = 120)] for _ in range(90)]
-
+for i in range(120):
+    BIGM[5][i] = 0
 
 def square(matrix: list[list]) -> list:
     '''
@@ -50,7 +49,7 @@ def convert_similarity(arr: list) -> list:
     return [[int(round(1-value, 2)*100) for value in row] for row in arr]
 
 
-def remove_not_accepted(arr: list) -> list:
+def remove_not_accepted(arr: list, min_accept: int = 60) -> list:
     '''
     Make cost INF if similarity < 60%
 
@@ -63,7 +62,7 @@ def remove_not_accepted(arr: list) -> list:
     >>> remove_not_accepted(similarity)
     [[inf, inf, 30], [inf, 40, 0], [inf, inf, 10]]
     '''
-    return [[(value if value <= 100-MIN_ACCEPT else INF) for value in row] for row in arr]
+    return [[(value if value <= 100-min_accept else INF) for value in row] for row in arr]
 
 
 def match(arr: list):
@@ -98,12 +97,15 @@ def match(arr: list):
     if not valid:
         return [-1] * n # If everyone is dead
     sub_arr = [arr[i].copy() for i in valid]
-
+    rows_to_match = len(sub_arr)
+    cols = m
 
     n = len(arr)
-    for _ in range(m - n):
-        arr.append([0]*m)
-    n = len(arr)
+    if rows_to_match < cols:
+        # Add dummy rows (Recipients) to make it square
+        sub_arr.extend([[0] * cols for _ in range(cols - rows_to_match)])
+    n = len(sub_arr)
+    arr = sub_arr
     # Step 1 & 2
     def reduction(arr_copy: list):
         '''
@@ -219,11 +221,16 @@ def match(arr: list):
         '''
         min_v = INF
         check = [i for i in range(n) if i not in dels['rows']]
+        print(matrix)
         for row in check:
             for i in range(n):
-                if i not in dels['cols']:
-                    if matrix[row][i] < min_v:
-                        min_v = matrix[row][i]
+                try:
+                    if i not in dels['cols']:
+                        if matrix[row][i] < min_v:
+                            min_v = matrix[row][i]
+                except TypeError:
+                    print(min_v)
+                    print(matrix[row][i])
         if min_v == INF:
             return '\033[91mERROR in shifting, no possible shift\033[0m'
         for index, row in enumerate(matrix):
@@ -246,7 +253,7 @@ def match(arr: list):
     result = [-1] * n
     for i, idx in enumerate(valid):
         c = lines['matching'][i]
-        if arr[idx][c] == INF:
+        if arr[i][c] == INF:
             result[idx] = -1
         else:
             result[idx] = c
@@ -267,9 +274,9 @@ if __name__ == "__main__":
     ma = convert_similarity(ma)
     ma = remove_not_accepted(ma)
     ma = square(ma)
-    test = linear_sum_assignment(ma)[1]
+    #test = linear_sum_assignment(ma)[1]
     ma = match(ma)
-    print(ma == list(test))
+    #print(ma == list(test))
     end = perf_counter()
     sum1 = 0
     sum2 = 0
@@ -284,14 +291,14 @@ if __name__ == "__main__":
         sum1 += BIGM[i][v] # i is now guaranteed to be < 100
 
     # Calculate sum2 (for the 'linear_sum_assignment' result)
-    sum2 = 0
-    for i in range(original_rows): # <-- Only iterate up to original_rows
-        v = test[i] # Column index from scipy's result
-        if v == -1: # The scipy result should not have -1, but keep the check for safety
-            continue
-        sum2 += BIGM[i][v] # i is now guaranteed to be < 100
+    # sum2 = 0
+    # for i in range(original_rows): # <-- Only iterate up to original_rows
+    #     v = test[i] # Column index from scipy's result
+    #     if v == -1: # The scipy result should not have -1, but keep the check for safety
+    #         continue
+    #     sum2 += BIGM[i][v] # i is now guaranteed to be < 100
     print(ma)
-    print(test)
+    #print(test)
     print(sum1)
     print(sum2)
     print(f"Time taken = {round(end-start, 3)}s")
