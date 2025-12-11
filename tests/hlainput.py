@@ -19,6 +19,3 @@ def get_hla_dict(path: str) -> dict:
             hla_dict[hla_id] = alele
 
     return hla_dict
-
-
-print(get_hla_dict("hla_example.txt"))
