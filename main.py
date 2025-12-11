@@ -69,21 +69,19 @@ def write_matrix_csv(path: Optional[str], rec_ids: List[str], don_ids: List[str]
     :param min_accept: Description
     :type min_accept: float
     '''
-    out = open(path, 'w', newline='', encoding='utf-8') if path else sys.stdout
-    writer = csv.writer(out)
-    # header: empty corner + donor ids
-    writer.writerow([''] + don_ids)
-    threshold = min_accept / 100.0
-    for i, rid in enumerate(rec_ids):
-        row = [''] * len(don_ids)
-        assigned = result[i] if i < len(result) else -1
-        if assigned != -1 and 0 <= assigned < len(don_ids):
-            val = sim[i][assigned]
-            if val is not None and val >= threshold:
-                row[assigned] = f"{val:.6f}"
-        writer.writerow([rid] + row)
-    if path:
-        out.close()
+    with open(path, 'w', newline='', encoding='utf-8') if path else sys.stdout as out:
+        writer = csv.writer(out)
+        # header: empty corner + donor ids
+        writer.writerow([''] + don_ids)
+        threshold = min_accept / 100.0
+        for i, rid in enumerate(rec_ids):
+            row = [''] * len(don_ids)
+            assigned = result[i] if i < len(result) else -1
+            if assigned != -1 and 0 <= assigned < len(don_ids):
+                val = sim[i][assigned]
+                if val is not None and val >= threshold:
+                    row[assigned] = f"{val:.6f}"
+            writer.writerow([rid] + row)
 
 
 def write_matrix_html(path: Optional[str], rec_ids: List[str], don_ids: List[str], sim: List[List[float]], result: List[int], min_accept: float):
