@@ -1,0 +1,15 @@
+[[inf, 0, inf, inf, inf, inf, 17, inf, inf, inf], [inf, 0, 9, 10, inf, inf, inf, inf, inf, inf], [10, 10, inf, inf, inf, 11, inf, inf, 0, 9], [inf, inf, 16, 9, 26, inf, inf, 0, inf, inf], [inf, inf, inf, inf, inf, 13, 0, inf, inf, 13], [22, 26, inf, inf, inf, 6, inf, 22, 0, inf], [8, inf, inf, 0, inf, 18, inf, inf, inf, inf], [inf, inf, inf, inf, inf, 0, inf, inf, inf, inf], [inf, inf, inf, inf, inf, 13, inf, 0, inf, inf], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+[[inf, 0, inf, inf, inf, inf, 11, inf, inf, inf], [inf, 0, 3, 4, inf, inf, inf, inf, inf, inf], [4, 10, inf, inf, inf, 5, inf, inf, 0, 3], [inf, inf, 10, 3, 20, inf, inf, 0, inf, inf], [inf, inf, inf, inf, inf, 13, 0, inf, inf, 13], [16, 26, inf, inf, inf, 0, inf, 22, 0, inf], [8, inf, inf, 0, inf, 18, inf, inf, inf, inf], [inf, inf, inf, inf, inf, 0, inf, inf, inf, inf], [inf, inf, inf, inf, inf, 7, inf, 0, inf, inf], [0, 6, 0, 0, 0, 0, 0, 6, 6, 0]]
+[[inf, 0, inf, inf, inf, inf, 8, inf, inf, inf], [inf, 0, 0, 1, inf, inf, inf, inf, inf, inf], [1, 10, inf, inf, inf, 5, inf, inf, 0, 0], [inf, inf, 7, 0, 17, inf, inf, 0, inf, inf], [inf, inf, inf, inf, inf, 16, 0, inf, inf, 13], [13, 26, inf, inf, inf, 0, inf, 22, 0, inf], [8, inf, inf, 0, inf, 21, inf, inf, inf, inf], [inf, inf, inf, inf, inf, 0, inf, inf, inf, inf], [inf, inf, inf, inf, inf, 7, inf, 0, inf, inf], [0, 9, 0, 0, 0, 3, 0, 9, 9, 0]]
+[[inf, 0, inf, inf, inf, inf, 8, inf, inf, inf], [inf, 0, 0, 8, inf, inf, inf, inf, inf, inf], [1, 10, inf, inf, inf, 5, inf, inf, 0, 0], [inf, inf, 0, 0, 10, inf, inf, 0, inf, inf], [inf, inf, inf, inf, inf, 16, 0, inf, inf, 13], [13, 26, inf, inf, inf, 0, inf, 29, 0, inf], [1, inf, inf, 0, inf, 14, inf, inf, inf, inf], [inf, inf, inf, inf, inf, 0, inf, inf, inf, inf], [inf, inf, inf, inf, inf, 0, inf, 0, inf, inf], [0, 9, 0, 7, 0, 3, 0, 16, 9, 0]]
+recipient_id,donor_id,similarity
+R1,R2,0.9698
+R2,R3,0.8001
+R3,R10,0.8888
+R4,,
+R5,R4,0.8738
+R6,R7,0.8467
+R7,R9,0.9899
+R8,R1,0.8682
+R9,R6,0.9557
+R10,R8,0.9490

@@ -103,15 +103,24 @@ assignments = match(filtered_matrix)
 ### Command Line Interface
 
 ```bash
-# Run matching with custom data
-python -m matcher --recipients data/recipients.json --donors data/donors.json
+# Run matching with custom data (script entrypoint)
+python main.py recipients.csv donors.csv
 
-# Adjust acceptance threshold
-python -m matcher --threshold 0.7 --input data/sample.json
+# Adjust acceptance threshold (percentage, default 60)
+python main.py recipients.csv donors.csv --min-accept 70
 
-# Generate detailed report
-python -m matcher --input data/sample.json --output results/matching.json --verbose
+# Verbose mode prints progress to stderr
+python main.py recipients.csv donors.csv --verbose
 ```
+
+Notes on `--min-accept`:
+- The value is a percentage (0-100). A higher value requires
+   greater similarity to accept a donor for a recipient.
+- Internally the pipeline converts similarity to integer costs and
+   rejects any pairing whose similarity is below `--min-accept`.
+   For example, `--min-accept 60` allows pairs with similarity >= 60%.
+   Increasing to `--min-accept 80` will make the system stricter.
+
 
 ### Working with HLA Data
 
