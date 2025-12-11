@@ -343,17 +343,7 @@ python main.py recs.csv dons.csv --min-accept 50
 
 **Validated on:** 15,000 historical transplant cases with documented outcomes
 
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please:
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Add tests for new functionality
-4. Submit a pull request
-
----
+--- 
 
 ## 📄 License
 
@@ -366,13 +356,18 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) file for
 1. Kuhn, H. W. (1955). "The Hungarian method for the assignment problem". *Naval Research Logistics Quarterly*
 2. Hopcroft, J. E., & Karp, R. M. (1973). "An n^5/2 algorithm for maximum matchings in bipartite graphs"
 3. Kőnig, D. (1931). "Gráfok és mátrixok". *Matematikai és Fizikai Lapok*
-4. UNOS HLA Matching Guidelines (2024). *United Network for Organ Sharing*
-
+4. https://www.ebi.ac.uk/ipd/imgt/hla (IPD-IMGT/HLA)
 ---
 
 ## 👥 Authors
 
 **Discrete Mathematics Project Team 2025**
+- Oleksandr Oksentiuk
+- Maksym Shkunda
+- Ivan Bohatyrov
+- Maryana Moroz
+- Sofia Parubocha
+
 
 For questions or support, please open an issue on GitHub.
 
