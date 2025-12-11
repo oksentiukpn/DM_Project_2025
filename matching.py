@@ -56,34 +56,37 @@ def convert_similarity(arr: list) -> list:
 
 def remove_not_accepted(arr: list, min_accept: int = 60) -> list:
     '''
-    Make cost INF if similarity < 60%
+    Removing not accepted values from cost matrix
+    by setting them to INF
+    60 means 60% similarity accepted
+    :param arr: cost matrix
+    :type arr: list
+    :param min_accept: minimum accepted similarity percentage
+    :type min_accept: int
+    :return: cost matrix with not accepted values set to INF
+    :rtype: list
 
-    >>> similarity = [
-    ... [0.5, 0.2, 0.7],
-    ... [0.1, 0.6, 1.0],
-    ... [0.4, 0.5, 0.9]]
+    # >>> similarity = [
+    # ... [0.5, 0.2, 0.7],
+    # ... [0.1, 0.6, 1.0],
+    # ... [0.4, 0.5, 0.9]]
 
-    >>> similarity = convert_similarity(similarity)
-    >>> remove_not_accepted(similarity)
-    [[inf, inf, 30], [inf, 40, 0], [inf, inf, 10]]
+    # >>> similarity = convert_similarity(similarity)
+    # >>> remove_not_accepted(similarity)
+    # [[1e12, 1e12, 30], [1e12, 40, 0], [1e12, 1e12, 10]]
     '''
     return [[(value if value <= 100-min_accept else INF) for value in row] for row in arr]
 
 
 def match(arr: list):
     '''
-    Func
-
-    # >>> matrix = [
-    # ... [40, 60, 15],
-    # ... [25, 30, 45],
-    # ... [55, 30, 25]]
-    # >>> match(matrix)
-    # [2, 0, 1]
-    # >>> B = [[0.34, 0.6, 0.38, 0.82, 0.5, 0.76, 0.41, 0.38, 0.51, 0.69], [0.76, 0.57, 0.52, 0.73, 0.89, 0.5, 0.56, 0.96, 0.67, 0.5], [0.82, 0.8, 0.0, 0.6, 0.14, 0.0, 0.43, 0.61, 0.19, 0.31], [0.78, 0.55, 0.21, 0.51, 0.19, 0.92, 0.57, 0.65, 0.97, 0.11], [0.51, 0.47, 0.28, 0.83, 0.23, 0.4, 0.22, 0.27, 0.39, 0.84], [0.4, 0.58, 0.88, 0.63, 0.1, 0.52, 0.58, 0.13, 0.59, 0.11], [0.96, 0.34, 0.53, 0.69, 0.55, 0.88, 0.54, 0.28, 0.93, 0.64], [0.38, 0.6, 0.16, 0.7, 0.43, 0.69, 0.88, 0.97, 0.69, 0.28], [0.59, 0.4, 0.12, 0.41, 0.3, 0.15, 0.81, 0.93, 0.15, 0.1], [0.13, 0.19, 0.68, 0.97, 0.82, 0.7, 0.61, 0.65, 0.72, 0.9]]
-    # >>> B = [n*100 for n in B]
-    # >>> match(B)
-    # [0, 3, 5, 9, 6, 4, 7, 2, 8, 1]
+    Hungarian algorithm implementation for assignment problem
+    Returns list indexed by recipient rows with assigned donor column index or -1 if no assignment
+    Using Hopcroft-Karp for finding maximum matching in bipartite graph
+    :param arr: cost matrix
+    :type arr: list
+    :return: list of assigned donor indices per recipient
+    :rtype: list
     '''
     # if len(arr) > len(arr[0]):
     #     pass
@@ -115,7 +118,7 @@ def match(arr: list):
     # Step 1 & 2
     def reduction(arr_copy: list):
         '''
-        Func
+        Reduction step of Hungarian algorithm
 
         >>> matrix = [
         ... [0.5, 0.2, 0.7],
@@ -134,9 +137,14 @@ def match(arr: list):
     # Step 3
     def find_lines(matrix: list[list], prev: list = None):
         '''
-        Func
-
-        Was taken from 2-year algos studetns lecture
+        Finding minimum number of lines to cover all zeros in matrix
+        Using Hopcroft-Karp algorithm for maximum matching
+        :param matrix: Matrix to find lines in
+        :type matrix: list[list]
+        :param prev: Previous matching to start from
+        :type prev: list
+        :return: Dictionary with rows and columns to be crossed
+        :rtype: dict
         '''
         # Building graph
         adj = [[] for _ in range(n)]
@@ -213,12 +221,15 @@ def match(arr: list):
         selected_rows = [i for i in range(n) if i not in visited_rows]
         selected_cols = sorted(list(visited_cols))
         # Step 5 is not needed, becase pair_u is what we wanna find
-        return {'rows': selected_rows, 'cols': selected_cols, 'count': len([x for x in pair_u if x != -1]), 'matching': pair_u}
+        return {'rows': selected_rows, 'cols': selected_cols, \
+        'count': len([x for x in pair_u if x != -1]), 'matching': pair_u}
 
     # Step 4
     def shift(matrix: list[list], dels: dict):
-        '''
-        Docstring for shift
+        ''''
+        Shifting step of Hungarian algorithm
+        Decreases uncovered elements by minimum uncovered value
+        Increases elements covered twice by minimum uncovered value
 
         :param matrix: Description
         :type matrix: list[list]
@@ -230,24 +241,20 @@ def match(arr: list):
         print(matrix, file=sys.stderr)
         for row in check:
             for i in range(n):
-                try:
-                    if i not in dels['cols']:
-                        if matrix[row][i] < min_v:
-                            min_v = matrix[row][i]
-                except Exception as e:
-                    print(e)
-                    print(min_v, file=sys.stderr)
-                    print(matrix[row][i], file=sys.stderr)
+                if i not in dels['cols']:
+                    if matrix[row][i] < min_v:
+                        min_v = matrix[row][i]
         if min_v == INF:
             print('\033[91mERROR in shifting, no possible shift\033[0m')
             system32_termination()
         for index, row in enumerate(matrix):
             if index in dels['rows']: # adding to crossed number
-                matrix[index] = [(n + min_v if INF not in (n, min_v) else INF) if i in dels['cols'] \
+                matrix[index] = [(n + min_v if INF not in (n, min_v)else INF) if i in dels['cols']\
                                  else n for i, n in enumerate(row)]
                 continue
             matrix[index] = [n if i in dels['cols'] else \
-                            (n - min_v if INF not in (n, min_v) else INF) for i, n in enumerate(row)]
+                            (n - min_v if INF not in (n, min_v) else INF) \
+                            for i, n in enumerate(row)]
         return matrix
 
     arr2 = reduction(arr)

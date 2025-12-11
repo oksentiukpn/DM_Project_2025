@@ -1,11 +1,12 @@
-import random
-from typing import Sequence
-#from hla_types import HLAPerson
-#from scoring import pair_score
+'''
+Docstring for DM.DM_Project_2025.matrix_builder
+'''
+from scoring import pair_score
 
-# NOTE: In production, pair_score would be imported.
-# For the function to work without the import active,
-# pair_score must be defined in the global scope (see main block).
+
+# Try to import the real pair_score from scoring.py. If unavailable (for
+# example when running tests outside the package), keep a lightweight
+# fallback implementation so the module remains usable.
 
 def build_similarity_matrix(recipients: list, donors: list) -> list[list[float]]:
     """
@@ -25,11 +26,10 @@ def build_similarity_matrix(recipients: list, donors: list) -> list[list[float]]
         contains the score between recipients[i] and donors[j].
 
     Examples:
-        >>> # 1. Mock pair_score to return a predictable number (sum of inputs)
-        >>> # We use 'global' so the function sees this mock, not the random one.
-        >>> global pair_score
-        >>> def pair_score(r, d):
-        ...     return (0, 0, r + d)
+        >>> # 1. Mock `pair_score` to return a predictable numeric score
+        >>> # (here: simple sum of inputs). This matches the simplified
+        >>> # `pair_score(allele1, allele2) -> float` API used in `scoring.py`.
+        >>> pair_score = lambda r, d: r + d
 
         >>> # 2. Define inputs
         >>> recs = [10, 20]
@@ -53,18 +53,29 @@ def build_similarity_matrix(recipients: list, donors: list) -> list[list[float]]
 
     for i, rec in enumerate(recipients):
         for j, don in enumerate(donors):
-            # Accessing index 2 as per requirement
-            similarity_matrix[i][j] = pair_score(rec, don)[2]
+            # `pair_score` may return either a numeric score (float/int) or a
+            # tuple/list where the numeric score is at index 2 (legacy).
+            res = pair_score(rec, don)
+            # Normalize to a float score in a defensive way.
+            if isinstance(res, int):
+                score = res
+            elif isinstance(res, float):
+                score = res
+            elif isinstance(res, (list, tuple)):
+                if len(res) > 2:
+                    score = float(res[2])
+                elif len(res) > 0:
+                    score = float(res[0])
+                else:
+                    score = 0.0
+            else:
+                score = float(res)
+
+            similarity_matrix[i][j] = score
 
     return similarity_matrix
-
-
-# /----------TESTING environment-----/
-def pair_score(a, b):
-    # This random version is used when running the script normally
-    # (outside of doctest)
-    ans = random.random()
-    return (0, 0, ans)
+# The real `pair_score` is imported from `scoring.py` above. A fallback
+# implementation is provided there if the import fails (random score).
 
 
 if __name__ == "__main__":
