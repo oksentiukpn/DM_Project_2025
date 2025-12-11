@@ -6,10 +6,14 @@ import sys
 from sys import exit as system32_termination
 # import random
 
-INF = float('inf')
+# INF = float('inf')
+INF = 1e12
+
 # BIGM = [[float(f'0.{n}') for n in random.choices(range(0, 100), k = 120)] for _ in range(90)]
 # for i in range(120):
 #     BIGM[5][i] = 0
+
+
 
 def square(matrix: list[list]) -> list:
     '''
@@ -230,16 +234,20 @@ def match(arr: list):
                     if i not in dels['cols']:
                         if matrix[row][i] < min_v:
                             min_v = matrix[row][i]
-                except TypeError:
+                except Exception as e:
+                    print(e)
                     print(min_v, file=sys.stderr)
                     print(matrix[row][i], file=sys.stderr)
         if min_v == INF:
-            return '\033[91mERROR in shifting, no possible shift\033[0m'
+            print('\033[91mERROR in shifting, no possible shift\033[0m')
+            system32_termination()
         for index, row in enumerate(matrix):
             if index in dels['rows']: # adding to crossed number
-                matrix[index] = [(n + min_v if n != INF else INF) if i in dels['cols'] else n for i, n in enumerate(row)]
+                matrix[index] = [(n + min_v if INF not in (n, min_v) else INF) if i in dels['cols'] \
+                                 else n for i, n in enumerate(row)]
                 continue
-            matrix[index] = [n if i in dels['cols'] else (n - min_v if n != INF else INF) for i, n in enumerate(row)] # removing for all another
+            matrix[index] = [n if i in dels['cols'] else \
+                            (n - min_v if INF not in (n, min_v) else INF) for i, n in enumerate(row)]
         return matrix
 
     arr2 = reduction(arr)

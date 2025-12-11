@@ -19,6 +19,11 @@ from matching import convert_similarity, remove_not_accepted, match
 
 
 def read_people(path: str) -> Tuple[List[str], List[List[str]]]:
+    '''
+    Reads a CSV file with people (recipients or donors).
+    The first column is the person ID (name), the rest are alleles.
+    If the second column contains semicolon-separated alleles, they are split accordingly.
+    '''
     ids: List[str] = []
     alleles_list: List[List[str]] = []
     with open(path, newline='', encoding='utf-8') as fh:
@@ -48,6 +53,22 @@ def read_people(path: str) -> Tuple[List[str], List[List[str]]]:
 
 
 def write_matrix_csv(path: Optional[str], rec_ids: List[str], don_ids: List[str], sim: List[List[float]], result: List[int], min_accept: float):
+    '''
+    Docstring for write_matrix_csv
+
+    :param path: Description
+    :type path: Optional[str]
+    :param rec_ids: Description
+    :type rec_ids: List[str]
+    :param don_ids: Description
+    :type don_ids: List[str]
+    :param sim: Description
+    :type sim: List[List[float]]
+    :param result: Description
+    :type result: List[int]
+    :param min_accept: Description
+    :type min_accept: float
+    '''
     out = open(path, 'w', newline='', encoding='utf-8') if path else sys.stdout
     writer = csv.writer(out)
     # header: empty corner + donor ids
