@@ -113,7 +113,7 @@ In the context of our cost matrix, this theorem translates as follows:
 | **Matrix Adjustment** | O(n²) | O(1) |
 | **Overall per Iteration** | **O(n^2.5)** | **O(n²)** |
 
-## 📈 Performance Benchmarks
+## Performance Benchmarks
 
 | Dataset Size | Time (seconds) |
 |--------------|----------------|
