@@ -257,6 +257,20 @@ python main.py examples/recipients.csv examples/donors.csv --verbose --min-accep
 python main.py examples/recipients.csv examples/donors.csv --verbose --min-accept 70 --verbose
 
 ```
+
+
+### Threshold Adjustment
+
+```bash
+# Stricter matching (80% minimum)
+python main.py examples/recipients.csv examples/donors.csv --verbose --min-accept 80
+
+# Relaxed matching (50% minimum)
+python main.py examples/recipients.csv examples/donors.csv --verbose --min-accept 50
+```
+
+
+
 ### Using docker
 ```bash
 docker build . -t hla
@@ -321,16 +335,6 @@ custom_weights = {
 score = pair_score(recipient, donor, locus_weights=custom_weights)
 ```
 
-### Threshold Adjustment
-
-```bash
-# Stricter matching (80% minimum)
-python main.py recs.csv dons.csv --min-accept 80
-
-# Relaxed matching (50% minimum)
-python main.py recs.csv dons.csv --min-accept 50
-```
-
 
 ### Validation Results
 
@@ -355,7 +359,9 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) file for
 1. Kuhn, H. W. (1955). "The Hungarian method for the assignment problem". *Naval Research Logistics Quarterly*
 2. Hopcroft, J. E., & Karp, R. M. (1973). "An n^5/2 algorithm for maximum matchings in bipartite graphs"
 3. Kőnig, D. (1931). "Gráfok és mátrixok". *Matematikai és Fizikai Lapok*
-4. https://www.ebi.ac.uk/ipd/imgt/hla (IPD-IMGT/HLA)
+4. https://www.ebi.ac.uk/ipd/imgt/hla (IPD-IMGT/HLA) #Dataset
+5. https://pmc.ncbi.nlm.nih.gov/articles/PMC5141243/ #Explanation of importance of allels
+6. https://unos.org/transplant/how-we-match-organs/ #US guideline to organ transplantation
 ---
 
 ## Team Contribution & Feedback
