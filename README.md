@@ -115,16 +115,16 @@ In the context of our cost matrix, this theorem translates as follows:
 
 ## 📈 Performance Benchmarks
 
-| Dataset Size | Time (seconds) | Memory (MB) |
-|--------------|----------------|-------------|
-| 10×10 | 0.02 | 12 |
-| 100×100 | 0.31 | 48 |
-| 200×200 | 1.87 | 156 |
-| 500×500 | 52.3 | 1,024 |
-| 1000×1000 | 52.3 | 1,024 |
+| Dataset Size | Time (seconds) |
+|--------------|----------------|
+| 10×10 | 0.0005 |
+| 100×100 | 0.028 |
+| 200×200 | 0.16 |
+| 500×500 | 1.9 |
+| 1000×1000 | 9.1 |
 
 
-*Tested on: Intel i7-12700K, 32GB RAM*
+*Tested on: AMD RYZEN 7 5700X, 32GB RAM*
 
 
 **Total Complexity**: O(n^3) in worst case, though typically converges in O(n^2.5) iterations.
@@ -251,15 +251,21 @@ pip install -r requirements.txt
 
 ```bash
 # Basic usage
-python main.py recipients.csv donors.csv --output results.html --format html
+python main.py recipients.csv donors.csv --verbose --output results.html --format html
 
 # With custom threshold
-python main.py recipients.csv donors.csv --min-accept 70 --verbose
+python main.py recipients.csv donors.csv --verbose --min-accept 70 --verbose
 
 # CSV output
-python main.py recipients.csv donors.csv --output matrix.csv --format csv
+python main.py recipients.csv donors.csv --verbose --output matrix.csv --format csv
 ```
-
+### Using docker
+```bash
+docker build . -t hla
+docker run hla examples/recipients.csv examples/donors.csv --verbose --min-accept=50
+## Or using prebuild image
+docker run oksesaneka22/hla:latest examples/recipients.csv examples/donors.csv --verbose --min-accept=50
+```
 ### Input File Format
 
 **recipients.csv / donors.csv**:
