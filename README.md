@@ -38,7 +38,7 @@ docker build . -t hla
 docker run hla examples/recipients.csv examples/donors.csv --verbose --min-accept=50
 ## Or using prebuild image
 docker run oksesaneka22/hla:latest examples/recipients.csv examples/donors.csv --verbose --min-accept=50
-
+```
 ---
 
 ## 🎯 Executive Summary
