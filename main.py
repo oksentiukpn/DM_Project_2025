@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Command-line entry for HLA donor-recipient matching.
 
-Usage: python main.py recipients.csv donors.csv --output out.html --format html --min-accept 60 --verbose
+Usage:
+python main.py recipients.csv donors.csv --output out.html --format html --min-accept 60 --verbose
 
 Outputs either a CSV matrix (values or empty for rejected pairs) or an HTML
 table with colored cells: green for accepted similarity entries, red for rows
@@ -52,7 +53,8 @@ def read_people(path: str) -> Tuple[List[str], List[List[str]]]:
     return ids, alleles_list
 
 
-def write_matrix_csv(path: Optional[str], rec_ids: List[str], don_ids: List[str], sim: List[List[float]], result: List[int], min_accept: float):
+def write_matrix_csv(path: Optional[str], rec_ids: List[str], don_ids: List[str], \
+                    sim: List[List[float]], result: List[int], min_accept: float):
     '''
     Docstring for write_matrix_csv
 
@@ -84,11 +86,30 @@ def write_matrix_csv(path: Optional[str], rec_ids: List[str], don_ids: List[str]
             writer.writerow([rid] + row)
 
 
-def write_matrix_html(path: Optional[str], rec_ids: List[str], don_ids: List[str], sim: List[List[float]], result: List[int], min_accept: float):
+def write_matrix_html(path: Optional[str], rec_ids: List[str], don_ids: List[str], \
+                    sim: List[List[float]], result: List[int], min_accept: float):
+    '''
+    Docstring for write_matrix_html
+
+    :param path: Description
+    :type path: Optional[str]
+    :param rec_ids: Description
+    :type rec_ids: List[str]
+    :param don_ids: Description
+    :type don_ids: List[str]
+    :param sim: Description
+    :type sim: List[List[float]]
+    :param result: Description
+    :type result: List[int]
+    :param min_accept: Description
+    :type min_accept: float
+    '''
     threshold = min_accept / 100.0
     out = open(path, 'w', encoding='utf-8') if path else sys.stdout
-    out.write('<!doctype html>\n<html><head><meta charset="utf-8"><title>HLA Similarity Matrix</title>\n')
-    out.write('<style>table{border-collapse:collapse}td,th{border:1px solid #ccc;padding:6px;text-align:center} .good{background:#c8e6c9} .badrow{background:#ffcdd2}</style>\n')
+    out.write('<!doctype html>\n<html><head><meta charset="utf-8">\
+              <title>HLA Similarity Matrix</title>\n')
+    out.write('<style>table{border-collapse:collapse}td,th{border:1px solid #ccc;padding:6px;\
+              text-align:center} .good{background:#c8e6c9} .badrow{background:#ffcdd2}</style>\n')
     out.write('</head><body>\n')
     out.write('<table>\n')
     # header
@@ -120,13 +141,20 @@ def write_matrix_html(path: Optional[str], rec_ids: List[str], don_ids: List[str
 
 
 def main(argv=None):
+    '''
+    Docstring for main
+
+    :param argv: Description
+    '''
     p = argparse.ArgumentParser(description='HLA donor-recipient matching')
     p.add_argument('recipients', help='CSV file with recipients')
     p.add_argument('donors', help='CSV file with donors')
-    p.add_argument('--min-accept', type=float, default=60.0, help='Minimum acceptance threshold in percent (default: 60)')
+    p.add_argument('--min-accept', type=float, default=60.0, \
+                   help='Minimum acceptance threshold in percent (default: 60)')
     p.add_argument('--verbose', action='store_true', help='Verbose output')
     p.add_argument('--output', '-o', help='Output path (defaults to stdout)')
-    p.add_argument('--format', choices=['csv', 'html'], default='csv', help='Output format for matrix (csv or html). CSV cannot contain colors; use HTML for colored view')
+    p.add_argument('--format', choices=['csv', 'html'], default='csv', help='Output format for \
+                   matrix (csv or html). CSV cannot contain colors; use HTML for colored view')
     args = p.parse_args(argv)
 
     rec_ids, recs = read_people(args.recipients)
@@ -204,7 +232,7 @@ def main(argv=None):
                 fh.write(csv_text)
             if args.verbose:
                 print(f"Wrote CSV to {csv_path}", file=sys.stderr)
-        except Exception:
+        except FileNotFoundError:
             pass
 
     # Emit JSON with result and CSV to stdout for API consumption
