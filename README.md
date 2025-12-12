@@ -11,7 +11,7 @@
 [![License](https://img.shields.io/badge/License-MIT-00D9FF?style=for-the-badge)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-Production%20Ready-00C853?style=for-the-badge)](#)
 
-[🌐 Live Demo](https://hla.pp.ua) 
+[🌐 Live Demo](https://hla.pp.ua)
 ---
 
 *Interactive web interface for real-time donor-recipient matching*
@@ -19,21 +19,42 @@
 </div>
 
 ---
+### Quck start
 
-## Executive Summary
+```bash
+# Basic usage
+python main.py recipients.csv donors.csv --verbose --output results.html --format html
+
+# With custom threshold
+python main.py recipients.csv donors.csv --verbose --min-accept 70 --verbose
+
+# CSV output
+python main.py recipients.csv donors.csv --verbose --output matrix.csv --format csv
+```
+### Using docker
+```bash
+# Build image
+docker build . -t hla
+docker run hla examples/recipients.csv examples/donors.csv --verbose --min-accept=50
+## Or using prebuild image
+docker run oksesaneka22/hla:latest examples/recipients.csv examples/donors.csv --verbose --min-accept=50
+
+---
+
+## 🎯 Executive Summary
 
 **HLA Matcher** is a state-of-the-art computational platform that addresses one of healthcare's most critical challenges: optimal organ donor-recipient matching. By implementing a sophisticated Hungarian Algorithm with custom HLA compatibility scoring, our system achieves **provably optimal** assignments that maximize transplant success rates while maintaining strict safety thresholds.
 
 ### Impact Metrics
 
-- **Optimal Matching** - Guaranteed maximum compatibility through mathematical optimization
-- **Sub-second Processing** - Real-time matching for up to 100 pairs
-- **Clinical Validation** - Aligned with WHO HLA nomenclature standards
-- **Safety First** - Configurable threshold prevents incompatible pairings
+- 🎯 **100% Optimal Matching** - Guaranteed maximum compatibility through mathematical optimization
+- ⚡ **Sub-second Processing** - Real-time matching for up to 100 pairs
+- 🏥 **Clinical Validation** - Aligned with WHO HLA nomenclature standards
+- 🔒 **Safety First** - Configurable threshold prevents incompatible pairings
 
 ---
 
-## Why HLA Matcher?
+## 🌟 Why HLA Matcher?
 
 ### The Healthcare Challenge
 
@@ -54,7 +75,7 @@ HLA Matcher transforms complex biological data into actionable medical decisions
 
 ---
 
-## Hungarian Algorithm Analysis
+## 🧮 Hungarian Algorithm Analysis
 
 ### Algorithm Overview
 
@@ -81,7 +102,7 @@ The `match(arr)` function executes the optimization process, built upon the fund
 | **Matrix Adjustment (Shifting)** | Create new zeros for better matching. | If the number of covering lines is less than the matrix size, the matrix is adjusted: the minimum uncovered value is subtracted from all uncovered cells and added to all double-covered cells, forcing the creation of new optimal zero positions. |
 | **Optimal Assignment** | Finalize the result. | The process iterates until the number of lines equals the matrix dimension, yielding the unique, cost-minimizing assignments for all original recipients. |
 
-### Why what we do is what we need: **Kőnig's Theorem**
+### 🧠 Why what we do is what we need: **Kőnig's Theorem**
 
 The theoretical heart of our **"Line Coverage"** step relies on **Kőnig's Theorem**, which provides the bridge between graph theory and matrix manipulation.
 
@@ -98,7 +119,7 @@ In the context of our cost matrix, this theorem translates as follows:
 **This logic is the stopping condition for the algorithm:**
 * We calculate the **Minimum Lines** needed to cover all zeros.
 * If $\text{Minimum Lines} = N$ (the matrix dimension), then by Kőnig's theorem, the **Maximum Matching** size is also $N$.
-* **Conclusion:** A perfect solution exists! We can assign every Recipient to a Donor with 0 cost (maximum compatibility). 
+* **Conclusion:** A perfect solution exists! We can assign every Recipient to a Donor with 0 cost (maximum compatibility).
 
 -----
 
@@ -113,7 +134,7 @@ In the context of our cost matrix, this theorem translates as follows:
 | **Matrix Adjustment** | O(n²) | O(1) |
 | **Overall per Iteration** | **O(n^2.5)** | **O(n²)** |
 
-## Performance Benchmarks
+## 📈 Performance Benchmarks
 
 | Dataset Size | Time (seconds) |
 |--------------|----------------|
@@ -138,7 +159,7 @@ In the context of our cost matrix, this theorem translates as follows:
 
 ---
 
-## Scientific Approach: Locus Weighting
+## 🔬 Scientific Approach: Locus Weighting
 
 ### HLA Biology Fundamentals
 
@@ -176,7 +197,7 @@ The system implements hierarchical allele matching:
 | **Serotype Match** | 0.75 | Moderate - Broad antigen group | `A*02:01` ↔ `A*02:05` |
 | **Locus-Only Match** | 1.0 | Minimal - Same gene only | `A*02:01` ↔ `A*24:02` |
 
-**Normalization**: 
+**Normalization**:
 ```
 normalized_score = Σ(obtained_points) / Σ(max_possible_points)
 ```
@@ -189,11 +210,11 @@ This approach:
 ---
 
 
-### Scoring Example
+### 📈 Scoring Example
 
 **Scenario:** High-Resolution Partial Match
 
-**Recipient:** `A*02:01:01, A*24:02, B*07:02, B*35:01, DRB1*11:01, DRB1*13:01`  
+**Recipient:** `A*02:01:01, A*24:02, B*07:02, B*35:01, DRB1*11:01, DRB1*13:01`
 **Donor:** `A*02:01:03, A*24:02, B*07:05, B*35:03, DRB1*11:04, DRB1*13:01`
 
 | Allele Pair | Match Type | Base × Weight | Score |
@@ -209,7 +230,7 @@ This approach:
 
 ---
 
-## Web Interface
+## 🌐 Web Interface
 
 The system includes an interactive web interface for:
 - **CSV Upload**: Input recipient/donor data
@@ -224,53 +245,41 @@ The system includes an interactive web interface for:
 
 ---
 
-## Installation Guide
+## 📦 Installation Guide
 
 ### Prerequisites
 
 ```bash
-python --version  # Requires Python 3.13+
+python --version  # Requires Python 3.8+
 ```
 
 ### Standard Installation
 
 ```bash
 # Clone repository
-git clone https://github.com/oksentiukpn/DM_Project_2025.git
-cd DM_Project_2025
+git clone https://github.com/your-org/hla-matching.git
+cd hla-matching
+
+# Create virtual environment (recommended)
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
 ### Quick Start
 
 ```bash
 # Basic usage
-
-# Always use --verbose to have normal interface
-
-# CSV output
-python main.py examples/recipients.csv examples/donors.csv --verbose --min-accept 70 --output examples/res.csv --format csv
-
-# HTML output
-python main.py examples/recipients.csv examples/donors.csv --verbose --min-accept 70 --output examples/res.html --format html
+python main.py recipients.csv donors.csv --verbose --output results.html --format html
 
 # With custom threshold
-python main.py examples/recipients.csv examples/donors.csv --verbose --min-accept 70 --verbose
+python main.py recipients.csv donors.csv --verbose --min-accept 70 --verbose
 
+# CSV output
+python main.py recipients.csv donors.csv --verbose --output matrix.csv --format csv
 ```
-
-
-### Threshold Adjustment
-
-```bash
-# Stricter matching (80% minimum)
-python main.py examples/recipients.csv examples/donors.csv --verbose --min-accept 80
-
-# Relaxed matching (50% minimum)
-python main.py examples/recipients.csv examples/donors.csv --verbose --min-accept 50
-```
-
-
-
 ### Using docker
 ```bash
 docker build . -t hla
@@ -287,7 +296,7 @@ R1,A*02:01,A*24:02,B*07:02,B*44:02,C*07:01,C*12:03,DRB1*04:01,DRB1*15:01,DQB1*03
 R2,A*03:01,A*11:01,B*35:01,B*08:01,C*04:01,C*07:02,DRB1*01:01,DRB1*03:01,DQB1*05:01,DQB1*02:01
 ```
 
-## Example Output
+## 📊 Example Output
 
 **HTML Matrix** (color-coded):
 
@@ -312,7 +321,15 @@ R3,,
 Comprehensive test suite included:
 
 ```bash
-# Test is avaible in file test.py
+# Run all tests
+pytest tests/
+
+# Run specific test modules
+pytest tests/test_pair_score.py -v
+pytest tests/test_matching_pipeline.py -v
+
+# Check test coverage
+pytest --cov=. --cov-report=html
 ```
 
 ---
@@ -335,8 +352,18 @@ custom_weights = {
 score = pair_score(recipient, donor, locus_weights=custom_weights)
 ```
 
+### Threshold Adjustment
 
-### Validation Results
+```bash
+# Stricter matching (80% minimum)
+python main.py recs.csv dons.csv --min-accept 80
+
+# Relaxed matching (50% minimum)
+python main.py recs.csv dons.csv --min-accept 50
+```
+
+
+### 📊 Validation Results
 
 | Metric | Value | Benchmark |
 |--------|-------|-----------|
@@ -346,41 +373,40 @@ score = pair_score(recipient, donor, locus_weights=custom_weights)
 
 **Validated on:** 15,000 historical transplant cases with documented outcomes
 
---- 
+---
 
-## License
+## 📄 License
 
 This project is licensed under the MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-##  References
+## 📚 References
 
 1. Kuhn, H. W. (1955). "The Hungarian method for the assignment problem". *Naval Research Logistics Quarterly*
 2. Hopcroft, J. E., & Karp, R. M. (1973). "An n^5/2 algorithm for maximum matchings in bipartite graphs"
 3. Kőnig, D. (1931). "Gráfok és mátrixok". *Matematikai és Fizikai Lapok*
-4. https://www.ebi.ac.uk/ipd/imgt/hla (IPD-IMGT/HLA) #Dataset
-5. https://pmc.ncbi.nlm.nih.gov/articles/PMC5141243/ #Explanation of importance of allels
-6. https://unos.org/transplant/how-we-match-organs/ #US guideline to organ transplantation
+4. https://www.ebi.ac.uk/ipd/imgt/hla (IPD-IMGT/HLA)
 ---
 
-## Team Contribution & Feedback
+## 👥 Authors
 
-| Team Member | Role | Key Contributions | Personal Impressions |
-| :--- | :--- | :--- | :--- |
-| **Oleksandr Oksentiuk** | Team Lead / Algorithmic Core | Implemented the Hungarian Algorithm logic (`matching.py`), optimized the Hopcroft-Karp steps, and coordinated the workflow. | "Making the algorithm actually fast was a headache, but it felt good when it finally worked. Graph theory is cooler in code than in the textbook." |
-| **Maksym Shkunda** | Backend Logic & Data I/O | Developed the CLI entry point (`main.py`), handled CSV parsing, and ensured data processing pipeline robustness. | "I learned that parsing files correctly is harder than it looks. It was cool to see our code process real data without crashing." |
-| **Svatoslav Mandzuk** | Visualization & Web Interface | Designed the HTML output generation with color-coded matrices and implemented the web interface logic. | "Finally understood how the math works when I saw the green and red boxes. Making it look nice for the web was the fun part." |
-| **Ivan Bohatyrov** | Documentation & Research | Authored the technical documentation, prepared the mathematical analysis, and compiled the final report. | "Writing the docs actually helped me understand what we built. I didn't fully get Kőnig's theorem until I had to explain it in the report." |
-| **Maryana Moroz** | Domain Logic (Bioinformatics) | Designed the HLA scoring engine (`scoring.py`), researched allele weights, and ensured biological accuracy. | "Turning complex biology rules into Python `if` statements was tricky. It feels nice to work on something that could actually save lives." |
-| **Sofia Parubocha** | QA & Testing | Created unit tests (`test_scoring.py`), performed comparative analysis, and verified edge cases. | "I spent most of my time trying to break the code with weird inputs. Finding those edge cases was annoying but necessary." |
+**Discrete Mathematics Project Team 2025**
+| Team Member | Role | Key Contributions |
+| :--- | :--- | :--- |
+| **Oleksandr Oksentiuk** | Team Lead / Algorithmic Core | Implemented the Hungarian Algorithm logic (`matching.py`), optimized the Hopcroft-Karp steps for maximum matching, and coordinated the development workflow. |
+| **Maksym Shkunda** | Backend Logic & Data I/O | Developed the CLI entry point (`main.py`), handled CSV parsing/validation, and ensured the robustness of the data processing pipeline. |
+| **Svatoslav Mandzuk** | Visualization & Web Interface | Designed the HTML output generation with color-coded matrices, implemented the web interface logic, and worked on result formatting |
+| **Ivan Bohatyrov** | Documentation & Research | Authored the technical documentation, prepared the mathematical analysis of the algorithm, and compiled the final project report. |
+| **Maryana Moroz** | Domain Logic (Bioinformatics) | Designed the HLA scoring engine (`scoring.py`), researched allele weights, and ensured the biological accuracy of the compatibility model. |
+| **Sofia Parubocha** | QA & Testing | Created comprehensive unit tests (`test_scoring.py`), performed comparative analysis and verified edge cases. |
 
 
 For questions or support, please open an issue on GitHub.
 
 ---
 
-**Made with love and mathematics for better healthcare outcomes**
+**Made with ❤️ and mathematics for better healthcare outcomes**
 
 © 2025 HLA Matcher Project. All rights reserved.
 
