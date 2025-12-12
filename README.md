@@ -244,14 +244,18 @@ cd DM_Project_2025
 
 ```bash
 # Basic usage
-# Always use --verbose to have normal interface
-python main.py recipients.csv donors.csv --verbose --output results.html --format html
 
-# With custom threshold
-python main.py recipients.csv donors.csv --verbose --min-accept 70 --verbose
+# Always use --verbose to have normal interface
 
 # CSV output
-python main.py recipients.csv donors.csv --verbose --output matrix.csv --format csv
+python main.py examples/recipients.csv examples/donors.csv --verbose --min-accept 70 --output examples/res.csv --format csv
+
+# HTML output
+python main.py examples/recipients.csv examples/donors.csv --verbose --min-accept 70 --output examples/res.html --format html
+
+# With custom threshold
+python main.py examples/recipients.csv examples/donors.csv --verbose --min-accept 70 --verbose
+
 ```
 ### Using docker
 ```bash
