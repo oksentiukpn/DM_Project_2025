@@ -7,7 +7,7 @@ from sys import exit as system32_termination
 # import random
 
 # INF = float('inf')
-INF = 1e12
+INF = 100000
 
 
 
@@ -232,7 +232,7 @@ def match(arr: list):
         '''
         min_v = INF
         check = [i for i in range(n) if i not in dels['rows']]
-        print(matrix, file=sys.stderr)
+        # print(matrix, file=sys.stderr)
         for row in check:
             for i in range(n):
                 if i not in dels['cols']:
@@ -256,7 +256,7 @@ def match(arr: list):
     k = 0
     while lines['count'] != n:
         k += 1
-        if k == 100:
+        if k == 400:
             return 'Broken'
         arr2 = shift(arr2, lines)
         lines = find_lines(arr2, prev=lines['matching'])
@@ -277,4 +277,3 @@ def match(arr: list):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-
