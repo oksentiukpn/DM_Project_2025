@@ -124,7 +124,7 @@ In the context of our cost matrix, this theorem translates as follows:
 | 1000×1000 | 9.1 |
 
 
-*Tested on: Intel i7-12700K, 32GB RAM*
+*Tested on: AMD RYZEN 7 5700X, 32GB RAM*
 
 
 **Total Complexity**: O(n^3) in worst case, though typically converges in O(n^2.5) iterations.
