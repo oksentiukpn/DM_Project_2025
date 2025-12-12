@@ -236,21 +236,15 @@ python --version  # Requires Python 3.8+
 
 ```bash
 # Clone repository
-git clone https://github.com/your-org/hla-matching.git
-cd hla-matching
-
-# Create virtual environment (recommended)
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
+git clone https://github.com/oksentiukpn/DM_Project_2025.git
+cd DM_Project_2025
 ```
 
 ### Quick Start
 
 ```bash
 # Basic usage
+# Always use --verbose to have normal interface
 python main.py recipients.csv donors.csv --verbose --output results.html --format html
 
 # With custom threshold
@@ -300,15 +294,7 @@ R3,,
 Comprehensive test suite included:
 
 ```bash
-# Run all tests
-pytest tests/
-
-# Run specific test modules
-pytest tests/test_pair_score.py -v
-pytest tests/test_matching_pipeline.py -v
-
-# Check test coverage
-pytest --cov=. --cov-report=html
+# Test is avaible in file test.py
 ```
 
 ---
