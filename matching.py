@@ -8,7 +8,7 @@ from sys import exit as system32_termination
 
 # INF = float('inf')
 INF = 100000
-
+# RANDM = [[float(f'0.{i}') for i in random.choices(range(100), k=10)] for _ in range(10)]
 
 
 def square(matrix: list[list]) -> list:
@@ -277,3 +277,14 @@ def match(arr: list):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+
+    # Uncomment for testing on random matrix
+    # import time
+    # ma = RANDM
+    # ma = square(ma)
+    # ma = convert_similarity(ma)
+    # ma = remove_not_accepted(ma)
+    # start = time.perf_counter()
+    # print(match(ma))
+    # end = time.perf_counter()
+    # print(f'Time taken: {end - start} seconds')

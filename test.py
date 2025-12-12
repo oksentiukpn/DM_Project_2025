@@ -1,3 +1,6 @@
+'''
+Testing the Hungarian Algorithm implementation
+'''
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 INF = float('inf')

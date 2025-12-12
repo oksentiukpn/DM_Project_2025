@@ -11,7 +11,6 @@ import csv
 import sys
 import time
 import os
-from datetime import timedelta
 from typing import List, Tuple, Optional, Any
 from matrix_builder import build_similarity_matrix
 from matching import convert_similarity, remove_not_accepted, match
