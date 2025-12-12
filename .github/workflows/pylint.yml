@@ -20,4 +20,5 @@ jobs:
         pip install pylint
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py')
+        # This will return exit code 0 (pass) only if score > 8.0
+        pylint --fail-under=8 $(git ls-files '*.py')
